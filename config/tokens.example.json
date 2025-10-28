@@ -1,0 +1,92 @@
+{
+  "tokens": [
+    {
+      "token_id": "admin_token",
+      "name": "Admin Token",
+      "token": "122c06a36e60cff3f91f6004f9e375a8",
+      "scopes": [
+        "admin"
+      ],
+      "created": "2025-10-28T10:41:50.063561",
+      "expires": "2026-10-28T10:41:50.063567",
+      "enabled": true,
+      "metadata": {
+        "owner": "admin@example.com",
+        "purpose": "Full administrative access"
+      }
+    },
+    {
+      "token_id": "readonly_bot",
+      "name": "Read-Only Bot",
+      "token": "f146e609e045515c4499f23818fd8058",
+      "scopes": [
+        "read"
+      ],
+      "created": "2025-10-28T10:41:50.063574",
+      "expires": "2026-01-26T10:41:50.063575",
+      "enabled": true,
+      "path_allowlist": [
+        "/home/user/projects",
+        "/tmp"
+      ],
+      "path_denylist": [
+        "~/.ssh",
+        "~/.aws"
+      ],
+      "rate_limits": {
+        "requests_per_minute": 200,
+        "requests_per_hour": 5000
+      },
+      "metadata": {
+        "owner": "bot@example.com",
+        "purpose": "Read-only monitoring"
+      }
+    },
+    {
+      "token_id": "deploy_agent",
+      "name": "Deployment Agent",
+      "token": "311d5d1a8d701a3123f05e37c5c8101f",
+      "scopes": [
+        "read",
+        "write",
+        "exec"
+      ],
+      "created": "2025-10-28T10:41:50.063578",
+      "expires": "2026-04-26T10:41:50.063579",
+      "enabled": true,
+      "path_allowlist": [
+        "/home/user/app"
+      ],
+      "command_allowlist": [
+        "git",
+        "npm",
+        "node",
+        "pm2",
+        "systemctl"
+      ],
+      "require_approval": [
+        "fs_rm"
+      ],
+      "rate_limits": {
+        "requests_per_minute": 100,
+        "requests_per_hour": 2000
+      },
+      "metadata": {
+        "owner": "deploy@example.com",
+        "purpose": "Automated deployment"
+      }
+    }
+  ],
+  "global_rules": {
+    "global_denylist": [
+      "/etc/shadow",
+      "/etc/passwd",
+      "~/.ssh",
+      "~/.aws/credentials"
+    ],
+    "require_approval_operations": [
+      "fs_rm",
+      "exec:sudo"
+    ]
+  }
+}

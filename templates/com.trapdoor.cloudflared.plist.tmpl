@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>$CLOUDFLARE_LABEL</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$CLOUDFLARED_BIN</string>
+    <string>tunnel</string>
+    <string>run</string>
+    <string>--token</string>
+    <string>$CLOUDFLARE_TOKEN</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>$PATH_ENV</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>$LOG_DIR/launchd_cloudflared.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>$LOG_DIR/launchd_cloudflared.err.log</string>
+</dict>
+</plist>

@@ -1,0 +1,6 @@
+tunnel: $TUNNEL_ID
+credentials-file: $CONFIG_DIR/$TUNNEL_ID.json
+ingress:
+  - hostname: $HOSTNAME
+    service: http://127.0.0.1:$PORT
+  - service: http_status:404

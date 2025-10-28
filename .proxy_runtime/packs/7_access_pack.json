@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "base_url": "3",
+  "auth": {
+    "scheme": "Bearer",
+    "token": "90ac04027a0b4aba685dcae29eeed91a",
+    "applies_to": ["/fs/*", "/exec"]
+  },
+  "apis": {
+    "chat": {"path": "/v1/chat/completions", "openai_compatible": true},
+    "fs": {"base": "/fs", "endpoints": ["ls", "read", "write", "mkdir", "rm"]},
+    "exec": {"path": "/exec"}
+  },
+  "instructions": "Use the system prompt to request explicit HTTP calls for file/exec."
+}

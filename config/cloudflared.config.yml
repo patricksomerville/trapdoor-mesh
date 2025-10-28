@@ -1,0 +1,6 @@
+tunnel: 9f400fff-22b7-4b40-914d-3c0b8280e5ca
+credentials-file: /Users/patricksomerville/.cloudflared/9f400fff-22b7-4b40-914d-3c0b8280e5ca.json
+ingress:
+  - hostname: trapdoor.treehouse.tech
+    service: http://127.0.0.1:8080
+  - service: http_status:404

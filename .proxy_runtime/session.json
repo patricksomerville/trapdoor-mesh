@@ -1,0 +1,10 @@
+{
+  "started_at": 1761678659.53619,
+  "profile": "default",
+  "backend": "ollama",
+  "model": "qwen2.5-coder:32b",
+  "port": "8080",
+  "system_prompt": "You are Qwen 2.5 Coder 32B running locally behind an OpenAI-compatible proxy. When you need filesystem or command actions, propose explicit HTTP calls (method, path, JSON body) to /fs/* or /exec, and note that the caller must include Authorization: Bearer <token>.",
+  "public_url": "https://celsa-nonsimulative-wyatt.ngrok-free.dev",
+  "auth_token_file": "/Users/patricksomerville/Desktop/auth_token.txt"
+}

@@ -1,0 +1,36 @@
+Below is your connection context and the credentials/endpoints you should use to work on my machine safely.
+
+Context
+- You are an external, sandboxed AI agent connecting to my local LLM proxy.
+- Chat is OpenAI-compatible; filesystem and terminal access are token-protected.
+- Propose explicit HTTP calls for tools and include the Authorization header shown below.
+
+Service URL
+- Base: https://trapdoor.treehouse.tech
+- Health: GET https://trapdoor.treehouse.tech/health
+- Current model: qwen2.5-coder:32b (local via Ollama)
+
+Auth
+- Tools token: 12004c305ab471883d9e49788503485e
+- Header for tools: Authorization: Bearer 12004c305ab471883d9e49788503485e
+
+Chat API (OpenAI-compatible)
+- POST /v1/chat/completions
+- Example: {"model":"qwen2.5-coder:32b","messages":[{"role":"user","content":"Say ready."}]}
+- For streaming: add "stream": true (SSE)
+
+Tooling API (Filesystem + Exec)
+- GET /fs/ls?path=/
+- GET /fs/read?path=/etc/hosts
+- POST /fs/write  {"path":"/tmp/file.txt","content":"hello","mode":"write"}
+- POST /fs/mkdir  {"path":"/tmp/newdir","parents":true,"exist_ok":true}
+- POST /fs/rm     {"path":"/tmp/file.txt","recursive":false}
+- POST /exec      {"cmd":["uname","-a"],"cwd":"/","timeout":300,"sudo":false}
+
+Recommended system prompt
+- You are Qwen 2.5 Coder 32B running locally behind an OpenAI-compatible proxy. When you need filesystem or command actions, propose explicit HTTP calls (method, path, JSON body) to /fs/* or /exec, and note that the caller must include Authorization: Bearer <token>.
+
+Quick checks
+- curl -s https://trapdoor.treehouse.tech/health
+- curl -s -X POST https://trapdoor.treehouse.tech/v1/chat/completions -H 'Content-Type: application/json' -d '{"model":"qwen2.5-coder:32b","messages":[{"role":"user","content":"Say ready."}]}'
+- TOKEN=12004c305ab471883d9e49788503485e; curl -s -H "Authorization: Bearer 12004c305ab471883d9e49788503485e" "https://trapdoor.treehouse.tech/fs/ls?path=/"

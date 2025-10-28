@@ -1,0 +1,45 @@
+{
+  "app": {
+    "port": 8080,
+    "backend": "ollama",
+    "model": "qwen2.5-coder:32b",
+    "base_dir": "/",
+    "allow_absolute": true,
+    "allow_sudo": true,
+    "default_system_prompt": "You are Qwen 2.5 Coder 32B running locally behind an OpenAI-compatible proxy. When you need filesystem or command actions, propose explicit HTTP calls (method, path, JSON body) to /fs/* or /exec, and note that the caller must include Authorization: Bearer <token>."
+  },
+  "auth": {
+    "token_file": "/Users/patricksomerville/Desktop/auth_token.txt",
+    "keychain_service": "TrapdoorToolsToken",
+    "keychain_account": "trapdoor"
+  },
+  "launch_agents": {
+    "localproxy_label": "com.trapdoor.localproxy",
+    "cloudflared_label": "com.trapdoor.cloudflared",
+    "python_path": "/usr/local/bin/python3",
+    "server_path": "/Users/patricksomerville/Desktop/openai_compatible_server.py",
+    "working_directory": "/Users/patricksomerville/Desktop",
+    "path_env": "/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+    "log_dir": "/Users/patricksomerville/Desktop/.proxy_runtime",
+    "cloudflared_bin": "/opt/homebrew/bin/cloudflared"
+  },
+  "cloudflare": {
+    "token": "eyJhIjoiMjY5MGQwOTZmYzJmYzY1NDVkZTliZGRhYjBkZjBiZGEiLCJ0IjoiOWY0MDBmZmYtMjJiNy00YjQwLTkxNGQtM2MwYjgyODBlNWNhIiwicyI6Ik1URmlPRGxqWlRndE1USm1NeTAwTXpKaExXRTNZbUV0TW1JMFl6QTJPRFkxWkRreiJ9",
+    "tunnel_id": "9f400fff-22b7-4b40-914d-3c0b8280e5ca",
+    "hostname": "trapdoor.treehouse.tech",
+    "config_dir": "/Users/patricksomerville/.cloudflared"
+  },
+  "models": {
+    "default_profile": "default",
+    "profiles": {
+      "default": {
+        "name": "qwen2.5-coder:32b",
+        "system_prompt": "You are Qwen 2.5 Coder 32B running locally behind an OpenAI-compatible proxy. When you need filesystem or command actions, propose explicit HTTP calls (method, path, JSON body) to /fs/* or /exec, and note that the caller must include Authorization: Bearer <token>."
+      },
+      "tools": {
+        "name": "qwen2.5-coder:32b",
+        "system_prompt": "You are a tool-forward Qwen 2.5 Coder 32B instance. When responding, focus on producing actionable terminal and filesystem instructions with minimal prose."
+      }
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{"ts": 1761259494.7719522, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 28769, "content_chars": 744}
+{"ts": 1761259494.818927, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/", "status": "ok", "entries": 20}
+{"ts": 1761259496.7354681, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 1029, "content_chars": 6}
+{"ts": 1761259514.648006, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 2549, "content_chars": 6}
+{"ts": 1761259540.0302222, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 231, "content_chars": 6}
+{"ts": 1761259546.353952, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 209, "content_chars": 6}
+{"ts": 1761259618.986315, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 230, "content_chars": 6}
+{"ts": 1761259670.53471, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 464, "content_chars": 6}
+{"ts": 1761259699.8210719, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 214, "content_chars": 6}
+{"ts": 1761259707.996023, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 225, "content_chars": 6}
+{"ts": 1761259720.8385038, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 233, "content_chars": 6}
+{"ts": 1761259738.610694, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 225, "content_chars": 6}
+{"ts": 1761259760.434581, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 224, "content_chars": 6}
+{"ts": 1761259774.930423, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 223, "content_chars": 6}
+{"ts": 1761259774.979917, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/", "status": "ok", "entries": 20}
+{"ts": 1761259775.011908, "event": "exec", "backend": "ollama", "token": "8331ad1a9fd1", "status": "ok", "cmd": ["echo", "self-test"], "cwd": "/", "rc": 0}
+{"ts": 1761259783.628682, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/", "status": "ok", "entries": 20}
+{"ts": 1761259799.403009, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 230, "content_chars": 6}
+{"ts": 1761259799.4474812, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/", "status": "ok", "entries": 20}
+{"ts": 1761259799.475254, "event": "exec", "backend": "ollama", "token": "8331ad1a9fd1", "status": "ok", "cmd": ["echo", "self-test"], "cwd": "/", "rc": 0}
+{"ts": 1761259841.195582, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 449, "content_chars": 6}
+{"ts": 1761259841.222931, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/", "status": "ok", "entries": 20}
+{"ts": 1761259841.2521532, "event": "exec", "backend": "ollama", "token": "8331ad1a9fd1", "status": "ok", "cmd": ["echo", "self-test"], "cwd": "/", "rc": 0}
+{"ts": 1761260776.466235, "event": "auth_failure", "backend": "ollama", "reason": "missing_header"}
+{"ts": 1761260835.8058932, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville", "status": "ok", "entries": 179}
+{"ts": 1761260852.580398, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Desktop", "status": "ok", "entries": 67}
+{"ts": 1761260874.6911519, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Desktop", "status": "ok", "entries": 67}
+{"ts": 1761261408.3834088, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Downloads", "status": "ok", "entries": 109}
+{"ts": 1761261426.934538, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Downloads", "status": "ok", "entries": 109}
+{"ts": 1761261645.566313, "event": "fs_read", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Desktop/local_agent_server.py", "status": "ok", "mode": "text", "length": 44495}
+{"ts": 1761261664.4233139, "event": "fs_read", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Desktop/local_agent_server.py", "status": "ok", "mode": "text", "length": 44495}
+{"ts": 1761328781.8307211, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 15671, "content_chars": 6}
+{"ts": 1761328781.878813, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/", "status": "ok", "entries": 20}
+{"ts": 1761328781.9135182, "event": "exec", "backend": "ollama", "token": "8331ad1a9fd1", "status": "ok", "cmd": ["echo", "self-test"], "cwd": "/", "rc": 0}
+{"ts": 1761674811.472679, "event": "auth_failure", "backend": "ollama", "reason": "missing_header"}
+{"ts": 1761675207.8980181, "event": "auth_failure", "backend": "ollama", "reason": "invalid_token"}
+{"ts": 1761676062.580787, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 46059, "content_chars": 105}
+{"ts": 1761676132.7270641, "event": "auth_failure", "backend": "ollama", "reason": "missing_header"}
+{"ts": 1761676132.735924, "event": "auth_failure", "backend": "ollama", "reason": "invalid_token"}
+{"ts": 1761676431.392422, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 31776, "content_chars": 2145}
+{"ts": 1761677719.930312, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Desktop/Trapdoor", "status": "ok", "entries": 38}
+{"ts": 1761678314.775048, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Desktop", "status": "ok", "entries": 69}
+{"ts": 1761678325.072256, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Desktop", "status": "ok", "entries": 69}
+{"ts": 1761678334.1000361, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 8903, "content_chars": 96}
+{"ts": 1761678357.074059, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Desktop", "status": "ok", "entries": 69}
+{"ts": 1761678375.54646, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Desktop", "status": "ok", "entries": 69}
+{"ts": 1761678378.217931, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 2492, "content_chars": 96}
+{"ts": 1761678378.362835, "event": "exec", "backend": "ollama", "token": "8331ad1a9fd1", "status": "ok", "cmd": ["echo", "Hello", "from", "Trapdoor!"], "cwd": "/", "rc": 0}

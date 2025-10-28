@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "base_url": "https://trapdoor.treehouse.tech",
+  "auth": {"scheme": "Bearer", "token": "12004c305ab471883d9e49788503485e", "applies_to": ["/fs/*", "/exec"]},
+  "apis": {
+    "chat": {"path": "/v1/chat/completions", "openai_compatible": true},
+    "fs": {"base": "/fs", "endpoints": ["ls", "read", "write", "mkdir", "rm"]},
+    "exec": {"path": "/exec"}
+  },
+  "instructions": "Use the system prompt to request explicit HTTP calls for file/exec."
+}

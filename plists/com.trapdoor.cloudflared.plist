@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.trapdoor.cloudflared</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/cloudflared</string>
+    <string>tunnel</string>
+    <string>run</string>
+    <string>--token</string>
+    <string>eyJhIjoiMjY5MGQwOTZmYzJmYzY1NDVkZTliZGRhYjBkZjBiZGEiLCJ0IjoiOWY0MDBmZmYtMjJiNy00YjQwLTkxNGQtM2MwYjgyODBlNWNhIiwicyI6Ik1URmlPRGxqWlRndE1USm1NeTAwTXpKaExXRTNZbUV0TW1JMFl6QTJPRFkxWkRreiJ9</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/Users/patricksomerville/Desktop/.proxy_runtime/launchd_cloudflared.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/patricksomerville/Desktop/.proxy_runtime/launchd_cloudflared.err.log</string>
+</dict>
+</plist>

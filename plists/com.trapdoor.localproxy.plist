@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.trapdoor.localproxy</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/python3</string>
+    <string>/Users/patricksomerville/Desktop/openai_compatible_server.py</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/patricksomerville/Desktop</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>BACKEND</key>
+    <string>ollama</string>
+    <key>MODEL</key>
+    <string>qwen2.5-coder:32b</string>
+    <key>AUTH_TOKEN_FILE</key>
+    <string>/Users/patricksomerville/Desktop/auth_token.txt</string>
+    <key>BASE_DIR</key>
+    <string>/</string>
+    <key>ALLOW_ABSOLUTE</key>
+    <string>1</string>
+    <key>ALLOW_SUDO</key>
+    <string>1</string>
+    <key>DEFAULT_SYSTEM_PROMPT</key>
+    <string>You are Qwen 2.5 Coder 32B running locally behind an OpenAI-compatible proxy. When you need filesystem or command actions, propose explicit HTTP calls (method, path, JSON body) to /fs/* or /exec, and note that the caller must include Authorization: Bearer &lt;token&gt;.</string>
+    <key>PORT</key>
+    <string>8080</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/Users/patricksomerville/Desktop/.proxy_runtime/launchd_localproxy.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/patricksomerville/Desktop/.proxy_runtime/launchd_localproxy.err.log</string>
+</dict>
+</plist>

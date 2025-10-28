@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>$LOCALPROXY_LABEL</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$PYTHON_PATH</string>
+    <string>$SERVER_PATH</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>$WORKING_DIR</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>$PATH_ENV</string>
+    <key>BACKEND</key>
+    <string>$BACKEND</string>
+    <key>MODEL</key>
+    <string>$MODEL</string>
+    <key>AUTH_TOKEN_FILE</key>
+    <string>$AUTH_TOKEN_FILE</string>
+    <key>BASE_DIR</key>
+    <string>$BASE_DIR</string>
+    <key>ALLOW_ABSOLUTE</key>
+    <string>$ALLOW_ABSOLUTE</string>
+    <key>ALLOW_SUDO</key>
+    <string>$ALLOW_SUDO</string>
+    <key>DEFAULT_SYSTEM_PROMPT</key>
+    <string>$DEFAULT_SYSTEM_PROMPT</string>
+    <key>PORT</key>
+    <string>$PORT</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>$LOG_DIR/launchd_localproxy.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>$LOG_DIR/launchd_localproxy.err.log</string>
+</dict>
+</plist>
