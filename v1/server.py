@@ -369,15 +369,29 @@ FULL_ACCESS_WARNING = """
 
 You are granting an AI complete control over your machine:
 
-  • READ any file your user can access
-  • WRITE/MODIFY any file your user can write
-  • DELETE any file or directory
-  • EXECUTE any command including:
-    - Shell commands (bash, sh, zsh)
-    - System utilities (rm, mv, chmod)
-    - Package managers (pip, npm, apt)
-    - Sudo (if your user has sudo access)
-    - Scripts that could modify system config
+  FILESYSTEM
+  • Read any file your user can access
+  • Write/modify any file your user can write
+  • Delete any file or directory
+
+  COMMAND EXECUTION
+  • Shell commands (bash, sh, zsh)
+  • System utilities (rm, mv, chmod, kill)
+  • Package managers (pip, npm, brew, apt)
+  • Sudo commands (if your user has sudo access)
+  • Scripts that could modify system config
+
+  MACOS PERMISSIONS (if granted in System Preferences > Privacy):
+  • Screen Recording - Take screenshots (screencapture)
+  • Accessibility - Control other apps (osascript, cliclick)
+  • Microphone - Record audio (sox, ffmpeg)
+  • Camera - Capture video/photos (ffmpeg, imagesnap)
+  • Automation - Script apps (osascript, shortcuts)
+  • Full Disk Access - Read protected files
+
+  To grant these on macOS:
+  System Preferences > Security & Privacy > Privacy > [Category]
+  Add Terminal.app (or your terminal) to the allowed list.
 
 YOUR TOKEN IS YOUR ONLY PROTECTION.
 Anyone with your token has full access to your machine.
