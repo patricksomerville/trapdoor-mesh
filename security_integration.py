@@ -19,6 +19,7 @@ Usage in local_agent_server.py:
 """
 
 import os
+import time
 from pathlib import Path
 from typing import Optional, List, Tuple
 from fastapi import Header
@@ -185,15 +186,12 @@ def legacy_require_auth(authorization: Optional[str]) -> Optional[str]:
         # No tokens configured - fall back to legacy behavior (no auth)
         return None
     
-    try:
-        token_info = require_auth_and_permission(
-            authorization=authorization,
-            operation="legacy",  # Generic operation
-            skip_rate_limit=False
-        )
-        return _rate_limiter.get_token_fingerprint(token_info.token) if _rate_limiter else None
-    except Exception:
-        raise
+    token_info = require_auth_and_permission(
+        authorization=authorization,
+        operation="legacy",  # Generic operation
+        skip_rate_limit=False
+    )
+    return _rate_limiter.get_token_fingerprint(token_info.token) if _rate_limiter else None
 
 
 # ==================== Approval Management ====================
@@ -213,8 +211,6 @@ def get_token_manager() -> TokenManager:
 
 
 # ==================== Utility Functions ====================
-
-import time
 
 def log_security_event(
     token_info: TokenInfo,
