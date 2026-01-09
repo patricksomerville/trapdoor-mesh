@@ -364,6 +364,26 @@ def chat_completions(
 # CLI
 # ==============================================================================
 
+FULL_ACCESS_WARNING = """
+⚠️  FULL ACCESS MODE - READ CAREFULLY ⚠️
+
+You are granting an AI complete control over your machine:
+
+  • READ any file your user can access
+  • WRITE/MODIFY any file your user can write
+  • DELETE any file or directory
+  • EXECUTE any command including:
+    - Shell commands (bash, sh, zsh)
+    - System utilities (rm, mv, chmod)
+    - Package managers (pip, npm, apt)
+    - Sudo (if your user has sudo access)
+    - Scripts that could modify system config
+
+YOUR TOKEN IS YOUR ONLY PROTECTION.
+Anyone with your token has full access to your machine.
+
+"""
+
 def main():
     global ACCESS, PORT
 
@@ -372,14 +392,25 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Access Levels:
-  --limited   Read-only filesystem, no exec (DEFAULT - safest)
-  --solid     Read/write filesystem, no exec
-  --full      Full access including command execution
+  --limited   Read-only filesystem access (DEFAULT - safest)
+              AI can browse and read files, nothing else.
+
+  --solid     Read + write filesystem access
+              AI can read, create, and modify files.
+              AI cannot delete files or run commands.
+
+  --full      FULL ACCESS - use with caution!
+              AI can read/write/delete files AND execute any command.
+              This includes shell, sudo, and system utilities.
+
+Security:
+  Your token (in ~/.trapdoor/token) is your only protection.
+  Keep it secret. Rotate it if compromised: rm ~/.trapdoor/token
 
 Examples:
   trapdoor                     # Safe read-only mode
   trapdoor --solid             # Allow file writes
-  trapdoor --full --port 9000  # Full access on port 9000
+  trapdoor --full -y           # Full access (skip confirmation)
 """
     )
 
@@ -391,22 +422,39 @@ Examples:
 
     parser.add_argument("--port", "-p", type=int, default=8080, help="Port (default: 8080)")
     parser.add_argument("--host", default="0.0.0.0", help="Host (default: 0.0.0.0)")
+    parser.add_argument("-y", "--yes", action="store_true", help="Skip confirmation for --full")
 
     args = parser.parse_args()
 
     # Set access level
     if args.full:
+        # Confirm full access unless -y flag
+        if not args.yes:
+            print(FULL_ACCESS_WARNING)
+            try:
+                response = input("Type 'yes' to continue with full access: ")
+                if response.lower() != 'yes':
+                    print("Aborted. Use --limited or --solid for safer options.")
+                    return
+            except (KeyboardInterrupt, EOFError):
+                print("\nAborted.")
+                return
+            print()
+
         ACCESS = LEVELS["full"]
         level_name = "full"
         level_icon = "🔓"
+        level_warning = "\n   ⚠️  AI can execute ANY command on your machine!"
     elif args.solid:
         ACCESS = LEVELS["solid"]
         level_name = "solid"
         level_icon = "🔐"
+        level_warning = ""
     else:
         ACCESS = LEVELS["limited"]
         level_name = "limited"
         level_icon = "🔒"
+        level_warning = ""
 
     PORT = args.port
 
@@ -418,13 +466,13 @@ Examples:
 ╚═══════════════════════════════════════════════════════════════════╝
 
 {level_icon} Access Level: {level_name.upper()}
-   {ACCESS['description']}
+   {ACCESS['description']}{level_warning}
 
    Permissions:
-   {"✓" if ACCESS["fs_read"] else "✗"} Read files
-   {"✓" if ACCESS["fs_write"] else "✗"} Write files
-   {"✓" if ACCESS["fs_delete"] else "✗"} Delete files
-   {"✓" if ACCESS["exec"] else "✗"} Execute commands
+   {"✓" if ACCESS["fs_read"] else "✗"} Read files        - Browse and read any file
+   {"✓" if ACCESS["fs_write"] else "✗"} Write files       - Create and modify files
+   {"✓" if ACCESS["fs_delete"] else "✗"} Delete files      - Remove files and directories
+   {"✓" if ACCESS["exec"] else "✗"} Execute commands  - Run shell, scripts, sudo
 
 🌐 Server:  http://localhost:{PORT}
 🔑 Token:   {TOKEN}
