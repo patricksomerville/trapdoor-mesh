@@ -2,130 +2,90 @@
 
 **Give cloud AIs safe access to your local machine.**
 
-Trapdoor is a simple bridge that lets cloud-based AI assistants (ChatGPT, Claude, etc.) interact with your local filesystem and run commands - securely, with token authentication.
-
-## Why?
-
-Cloud AI assistants are sandboxed. They can't see your files, run your code, or help with local tasks. Trapdoor fixes that.
-
-```
-┌─────────────────┐          ┌─────────────────┐
-│   ChatGPT       │          │  Your Machine   │
-│   Claude        │◄────────►│   Trapdoor      │
-│   Any AI        │  HTTPS   │   localhost     │
-└─────────────────┘          └─────────────────┘
-```
+Upload a connector script to ChatGPT, Claude, or any sandboxed AI - and let it read your files, write code, and run commands on your machine.
 
 ## Quick Start
 
-### 1. Start the server
-
 ```bash
+# Install
 pip install fastapi uvicorn requests
+
+# Run (safe read-only mode by default)
 python server.py
-```
 
-You'll see:
-```
-🌐 Server:  http://localhost:8080
-🔑 Token:   abc123def456...
-```
-
-### 2. Expose it publicly
-
-```bash
-# Using ngrok (free)
+# Expose publicly
 ngrok http 8080
-
-# Or cloudflared
-cloudflared tunnel --url http://localhost:8080
 ```
-
-### 3. Give AI access
 
 Upload `connector.py` to your AI chat, then:
 
 ```python
 import connector as td
-
-# Connect with your URL and token
-td.connect("https://abc123.ngrok.io", "your-token-here")
-
-# Now the AI can access your machine
-td.ls("/home/user")                    # List files
-td.read("/home/user/notes.txt")        # Read files
-td.write("/tmp/output.txt", "Hello!")  # Write files
-td.run("git status")                   # Run commands
+td.connect("https://abc123.ngrok.io", "your-token")
+td.ls("/home")
+td.read("/home/user/notes.txt")
 ```
 
-## API Endpoints
+## Access Levels
 
-| Endpoint | Auth | Description |
-|----------|------|-------------|
-| `GET /health` | No | Health check |
-| `GET /fs/ls?path=...` | Yes | List directory |
-| `GET /fs/read?path=...` | Yes | Read file |
-| `POST /fs/write` | Yes | Write file |
-| `POST /fs/mkdir` | Yes | Create directory |
-| `POST /fs/rm` | Yes | Remove file/dir |
-| `POST /exec` | Yes | Execute command |
-| `POST /v1/chat/completions` | Yes | Chat proxy (optional) |
+```bash
+python server.py              # 🔒 LIMITED - read only (default)
+python server.py --solid      # 🔐 SOLID   - read + write
+python server.py --full       # 🔓 FULL    - everything + exec
+```
 
-## Configuration
+| Level | Read | Write | Delete | Exec |
+|-------|------|-------|--------|------|
+| `--limited` | ✓ | ✗ | ✗ | ✗ |
+| `--solid` | ✓ | ✓ | ✗ | ✗ |
+| `--full` | ✓ | ✓ | ✓ | ✓ |
 
-Environment variables:
+**Full access** requires confirmation (or `-y` to skip):
+- Grants shell, sudo, system utilities
+- On macOS: can use screen capture, mic, camera if you've granted those permissions
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `TRAPDOOR_PORT` | 8080 | Server port |
-| `TRAPDOOR_TOKEN_FILE` | ~/.trapdoor/token | Token location |
-| `TRAPDOOR_ALLOW_EXEC` | 1 | Enable command execution |
-| `OLLAMA_HOST` | - | Ollama URL for chat proxy |
+## API
+
+| Endpoint | Method | Auth | Description |
+|----------|--------|------|-------------|
+| `/health` | GET | No | Health check |
+| `/fs/ls?path=...` | GET | Yes | List directory |
+| `/fs/read?path=...` | GET | Yes | Read file |
+| `/fs/write` | POST | Yes | Write file |
+| `/fs/mkdir` | POST | Yes | Create directory |
+| `/fs/rm` | POST | Yes | Remove file/dir |
+| `/exec` | POST | Yes | Execute command |
 
 ## Security
 
-- **Token auth**: All endpoints (except /health) require Bearer token
-- **Token auto-generated**: Stored in `~/.trapdoor/token` with 0600 permissions
-- **Disable exec**: Set `TRAPDOOR_ALLOW_EXEC=0` to disable command execution
-- **Local only by default**: Server binds to localhost until you expose it
-
-## Examples
-
-### From curl
+Your token is your only protection:
 
 ```bash
-TOKEN="your-token"
-URL="https://your-ngrok-url.ngrok.io"
+# Token location
+~/.trapdoor/token
 
-# List files
-curl -H "Authorization: Bearer $TOKEN" "$URL/fs/ls?path=/home"
+# Revoke access instantly
+rm ~/.trapdoor/token
 
-# Read file
-curl -H "Authorization: Bearer $TOKEN" "$URL/fs/read?path=/etc/hostname"
-
-# Run command
-curl -X POST -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"cmd": ["uname", "-a"]}' \
-  "$URL/exec"
+# New token generated on next start
+python server.py
 ```
 
-### From Python
+## Files
 
-```python
-import requests
-
-URL = "https://your-url.ngrok.io"
-HEADERS = {"Authorization": "Bearer your-token"}
-
-# List directory
-r = requests.get(f"{URL}/fs/ls", headers=HEADERS, params={"path": "/home"})
-print(r.json())
-
-# Execute command
-r = requests.post(f"{URL}/exec", headers=HEADERS, json={"cmd": ["ls", "-la"]})
-print(r.json()["stdout"])
 ```
+v1/
+├── server.py      # The server (~500 lines)
+├── connector.py   # Upload to AI chats
+└── README.md      # You're here
+```
+
+## Roadmap
+
+- **1.0** ✅ Core server with access levels
+- **1.1** Instructions file + session logging
+- **1.2** Blocklist patterns
+- **1.5** Local chat gateway mode
 
 ## License
 
