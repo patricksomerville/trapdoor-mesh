@@ -19,6 +19,7 @@ Or upload chatgpt_proxy_client.py to ChatGPT for easy access.
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import os
 import requests
 import sys
 from pathlib import Path
@@ -28,7 +29,13 @@ sys.path.insert(0, str(Path(__file__).parent))
 import trapdoor_connector as td
 
 app = Flask(__name__)
-CORS(app)  # Allow requests from any origin
+
+# CORS configuration - default to localhost only for security
+ALLOWED_ORIGINS = os.environ.get(
+    "TRAPDOOR_PROXY_CORS_ORIGINS",
+    "http://localhost:*,http://127.0.0.1:*"
+).split(",")
+CORS(app, origins=ALLOWED_ORIGINS, supports_credentials=True)
 
 @app.route('/health', methods=['GET'])
 def health():

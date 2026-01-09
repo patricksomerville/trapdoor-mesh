@@ -23,11 +23,50 @@ Usage in sandboxed environment:
 """
 
 import requests
+import os
+from pathlib import Path
 from typing import List, Dict, Any, Optional
 
+
+def _get_token() -> str:
+    """
+    Get Trapdoor authentication token from environment or config file.
+
+    Tries in order:
+    1. TRAPDOOR_TOKEN environment variable
+    2. ~/.trapdoor/token config file
+
+    Returns:
+        Authentication token
+
+    Raises:
+        ValueError: If no token found
+    """
+    # Try environment variable first
+    token = os.environ.get("TRAPDOOR_TOKEN")
+    if token:
+        return token.strip()
+
+    # Fall back to config file
+    token_file = Path.home() / ".trapdoor" / "token"
+    if token_file.exists():
+        return token_file.read_text().strip()
+
+    # No token found
+    raise ValueError(
+        "No Trapdoor token found. Either:\n"
+        "  1. Set TRAPDOOR_TOKEN environment variable:\n"
+        "     export TRAPDOOR_TOKEN='your-token-here'\n"
+        f"  2. Create {token_file} with your token:\n"
+        f"     mkdir -p {token_file.parent} && echo 'your-token' > {token_file}\n"
+        "\n"
+        "Get your token from Trapdoor control panel or config/tokens.json"
+    )
+
+
 # Configuration
-BASE_URL = "https://celsa-nonsimulative-wyatt.ngrok-free.dev"
-TOKEN = "90ac04027a0b4aba685dcae29eeed91a"
+BASE_URL = "https://trapdoor.treehouse.tech"
+TOKEN = _get_token()
 HEADERS = {"Authorization": f"Bearer {TOKEN}"}
 
 # ==================== Chat ====================

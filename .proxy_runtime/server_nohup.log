@@ -21,3 +21,4 @@ INFO:     45.48.232.70:0 - "GET /health HTTP/1.1" 200 OK
 INFO:     45.48.232.70:0 - "GET /health HTTP/1.1" 200 OK
 INFO:     45.48.232.70:0 - "GET /health HTTP/1.1" 200 OK
 INFO:     45.48.232.70:0 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58385 - "GET /health HTTP/1.1" 200 OK

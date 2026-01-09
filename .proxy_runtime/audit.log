@@ -46,3 +46,19 @@
 {"ts": 1761678375.54646, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Desktop", "status": "ok", "entries": 69}
 {"ts": 1761678378.217931, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 2492, "content_chars": 96}
 {"ts": 1761678378.362835, "event": "exec", "backend": "ollama", "token": "8331ad1a9fd1", "status": "ok", "cmd": ["echo", "Hello", "from", "Trapdoor!"], "cwd": "/", "rc": 0}
+{"ts": 1767891193.167637, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 21955, "content_chars": 26}
+{"ts": 1767891208.438998, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 1952, "content_chars": 26}
+{"ts": 1767891278.836303, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 2204, "content_chars": 26}
+{"ts": 1767891293.7964082, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 2756, "content_chars": 79}
+{"ts": 1767898031.45021, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Projects/Trapdoor", "status": "ok", "entries": 84}
+{"ts": 1767898073.688614, "event": "fs_read", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Projects/Trapdoor/README.md", "status": "ok", "mode": "text", "length": 2415}
+{"ts": 1767898073.711209, "event": "exec", "backend": "ollama", "token": "8331ad1a9fd1", "status": "ok", "cmd": ["echo", "Hello from trapdoor!"], "cwd": "/", "rc": 0}
+{"ts": 1767898095.238506, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 21517, "content_chars": 1}
+{"ts": 1767898197.628865, "event": "fs_read", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Projects/Trapdoor/README.md", "status": "ok", "mode": "text", "length": 2415}
+{"ts": 1767951379.360359, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 18510, "content_chars": 13}
+{"ts": 1767951379.465069, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Projects/Trapdoor", "status": "ok", "entries": 93}
+{"ts": 1767951387.564832, "event": "fs_ls", "backend": "ollama", "path": "/Users/patricksomerville/Projects/Trapdoor", "status": "ok", "entries": 93}
+{"ts": 1767951442.3927958, "event": "exec", "backend": "ollama", "status": "ok", "cmd": ["echo", "Hello from trapdoor"], "cwd": "/", "rc": 0}
+{"ts": 1767952222.861563, "event": "chat", "backend": "ollama", "endpoint": "/v1/chat/completions", "model": "qwen2.5-coder:32b", "stream": false, "status": "ok", "duration_ms": 18360, "content_chars": 31}
+{"ts": 1767952244.7697222, "event": "fs_ls", "backend": "ollama", "token": "8331ad1a9fd1", "path": "/Users/patricksomerville/Projects", "status": "ok", "entries": 68}
+{"ts": 1767952277.790071, "event": "exec", "backend": "ollama", "token": "8331ad1a9fd1", "status": "ok", "cmd": ["uname", "-s"], "cwd": "/", "rc": 0}

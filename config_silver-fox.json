@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "trapdoor": {
+      "command": "python3",
+      "args": ["/Users/patricksomerville/.claude/mcp_servers/trapdoor/trapdoor_mcp.py"],
+      "env": {
+        "TRAPDOOR_HUB": "ws://100.70.207.76:8081/v1/ws/agent",
+        "TRAPDOOR_LOCAL_URL": "http://localhost:8080"
+      }
+    }
+  }
+}

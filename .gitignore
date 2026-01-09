@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+
+# Logs and runtime
+*.log
+*.pid
+.proxy_runtime/
+
+# Config and secrets
+config/tokens.json
+config/tokens.backup
+*.token
+.env
+.env.local
+
+# Memory/state
+memory/events.jsonl
+memory/lessons.jsonl
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backup files
+*.backup
+*.bak
+~*

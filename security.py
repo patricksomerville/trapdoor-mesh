@@ -11,7 +11,9 @@ Provides:
 
 import json
 import hashlib
+import os
 import secrets
+import shutil
 import threading
 import time
 from collections import deque
@@ -157,33 +159,75 @@ class TokenManager:
         self._load_tokens()
     
     def _load_tokens(self) -> None:
-        """Load tokens from config file"""
+        """Load tokens from config file with automatic recovery"""
         if not self.config_path.exists():
             return
-        
+
         try:
             with open(self.config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
-            
+
             # Load global rules
             global_rules = config.get("global_rules", {})
             self.global_denylist = global_rules.get("global_denylist", [])
             self.require_approval_operations = set(
                 global_rules.get("require_approval_operations", [])
             )
-            
+
             # Load tokens
             for token_data in config.get("tokens", []):
                 token_info = TokenInfo.from_dict(token_data)
                 self.tokens[token_info.token_id] = token_info
                 self.token_lookup[token_info.token] = token_info.token_id
-        
+
+        except json.JSONDecodeError as e:
+            # Corrupted tokens.json - try to recover from backup
+            print(f"⚠️  Corrupted tokens.json detected: {e}")
+
+            backup_path = self.config_path.with_suffix(".backup")
+            if backup_path.exists():
+                print(f"🔄 Restoring from backup: {backup_path}")
+                shutil.copy2(backup_path, self.config_path)
+
+                # Retry load after restore
+                try:
+                    with open(self.config_path, "r", encoding="utf-8") as f:
+                        config = json.load(f)
+
+                    # Load global rules
+                    global_rules = config.get("global_rules", {})
+                    self.global_denylist = global_rules.get("global_denylist", [])
+                    self.require_approval_operations = set(
+                        global_rules.get("require_approval_operations", [])
+                    )
+
+                    # Load tokens
+                    for token_data in config.get("tokens", []):
+                        token_info = TokenInfo.from_dict(token_data)
+                        self.tokens[token_info.token_id] = token_info
+                        self.token_lookup[token_info.token] = token_info.token_id
+
+                    print("✅ Successfully recovered from backup")
+                except Exception as retry_error:
+                    raise RuntimeError(
+                        f"Failed to recover from backup: {retry_error}"
+                    ) from retry_error
+            else:
+                raise RuntimeError(
+                    "tokens.json corrupted and no backup available. "
+                    "Manual recovery required. "
+                    f"Restore from {self.config_path.with_suffix('.backup')} or "
+                    "recreate tokens manually."
+                ) from e
+
         except Exception as e:
             print(f"Error loading tokens: {e}")
+            raise
     
     def save_tokens(self) -> None:
-        """Save tokens to config file"""
+        """Save tokens to config file with atomic write and backup"""
         with self.lock:
+            # Build config
             config = {
                 "tokens": [t.to_dict() for t in self.tokens.values()],
                 "global_rules": {
@@ -191,11 +235,36 @@ class TokenManager:
                     "require_approval_operations": list(self.require_approval_operations)
                 }
             }
-            
+
+            # Ensure directory exists
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
-            
-            with open(self.config_path, "w", encoding="utf-8") as f:
-                json.dump(config, f, indent=2, ensure_ascii=False)
+
+            # Backup existing file
+            if self.config_path.exists():
+                backup_path = self.config_path.with_suffix(".backup")
+                shutil.copy2(self.config_path, backup_path)
+
+            # Atomic write via temp file
+            temp_path = self.config_path.with_suffix(".tmp")
+            try:
+                # Write to temp file
+                with open(temp_path, "w", encoding="utf-8") as f:
+                    json.dump(config, f, indent=2, ensure_ascii=False)
+                    f.flush()
+                    os.fsync(f.fileno())  # Force to disk
+
+                # Verify JSON is valid before committing
+                with open(temp_path, "r", encoding="utf-8") as f:
+                    json.load(f)
+
+                # Atomic commit (POSIX rename is atomic)
+                temp_path.replace(self.config_path)
+
+            except Exception as e:
+                # Cleanup temp file on failure
+                if temp_path.exists():
+                    temp_path.unlink()
+                raise RuntimeError(f"Token save failed: {e}") from e
     
     def validate_token(self, token: str) -> TokenInfo:
         """Validate token and return TokenInfo"""
