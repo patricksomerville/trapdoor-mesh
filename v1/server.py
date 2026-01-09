@@ -2,19 +2,14 @@
 """
 Trapdoor 1.0 - Give cloud AIs safe access to your local machine
 
-A minimal, secure bridge that exposes your filesystem and shell to
-cloud-based AI agents (ChatGPT, Claude, etc.) via a simple HTTP API.
-
-Run:
-    python server.py
-
-Then expose via ngrok/cloudflare:
-    ngrok http 8080
-
-Usage from cloud AI:
-    Upload connector.py and use td.ls(), td.read(), td.exec_command(), etc.
+Usage:
+    trapdoor                    # Start with limited access (default)
+    trapdoor --solid            # Read/write filesystem
+    trapdoor --full             # Full access including exec
+    trapdoor --port 9000        # Custom port
 """
 
+import argparse
 import os
 import secrets
 import subprocess
@@ -29,12 +24,42 @@ from pydantic import BaseModel
 import uvicorn
 
 # ==============================================================================
+# Access Levels
+# ==============================================================================
+
+LEVELS = {
+    "limited": {
+        "description": "Read-only filesystem, no command execution",
+        "fs_read": True,
+        "fs_write": False,
+        "fs_delete": False,
+        "exec": False,
+    },
+    "solid": {
+        "description": "Read/write filesystem, no command execution",
+        "fs_read": True,
+        "fs_write": True,
+        "fs_delete": False,
+        "exec": False,
+    },
+    "full": {
+        "description": "Full access: filesystem + command execution",
+        "fs_read": True,
+        "fs_write": True,
+        "fs_delete": True,
+        "exec": True,
+    },
+}
+
+# Current access level (set by CLI)
+ACCESS = LEVELS["limited"]
+
+# ==============================================================================
 # Configuration
 # ==============================================================================
 
-PORT = int(os.getenv("TRAPDOOR_PORT", "8080"))
-TOKEN_FILE = Path(os.getenv("TRAPDOOR_TOKEN_FILE", Path.home() / ".trapdoor" / "token"))
-ALLOW_EXEC = os.getenv("TRAPDOOR_ALLOW_EXEC", "1") == "1"
+PORT = 8080
+TOKEN_FILE = Path.home() / ".trapdoor" / "token"
 
 # ==============================================================================
 # Token Management
@@ -47,11 +72,9 @@ def get_or_create_token() -> str:
     if TOKEN_FILE.exists():
         return TOKEN_FILE.read_text().strip()
 
-    # Generate new token
     token = secrets.token_hex(16)
     TOKEN_FILE.write_text(token)
     TOKEN_FILE.chmod(0o600)
-    print(f"\n🔑 New token generated and saved to {TOKEN_FILE}")
     return token
 
 TOKEN = get_or_create_token()
@@ -95,7 +118,7 @@ def require_auth(authorization: Optional[str] = Header(None)) -> str:
 class WriteRequest(BaseModel):
     path: str
     content: str
-    mode: str = "write"  # write or append
+    mode: str = "write"
 
 class MkdirRequest(BaseModel):
     path: str
@@ -113,16 +136,23 @@ class ChatRequest(BaseModel):
     messages: list
 
 # ==============================================================================
-# Health Endpoint (No Auth)
+# Health Endpoint
 # ==============================================================================
 
 @app.get("/health")
 def health():
-    """Health check - no auth required"""
+    """Health check - shows current access level"""
+    level_name = next((k for k, v in LEVELS.items() if v == ACCESS), "unknown")
     return {
         "status": "ok",
         "version": "1.0.0",
-        "exec_enabled": ALLOW_EXEC,
+        "access_level": level_name,
+        "permissions": {
+            "read": ACCESS["fs_read"],
+            "write": ACCESS["fs_write"],
+            "delete": ACCESS["fs_delete"],
+            "exec": ACCESS["exec"],
+        },
         "timestamp": datetime.now().isoformat()
     }
 
@@ -138,13 +168,15 @@ def fs_ls(
     """List directory contents"""
     require_auth(authorization)
 
+    if not ACCESS["fs_read"]:
+        raise HTTPException(status_code=403, detail="Read access disabled")
+
     target = Path(path).expanduser().resolve()
 
     if not target.exists():
         raise HTTPException(status_code=404, detail=f"Path not found: {path}")
 
     if not target.is_dir():
-        # Return file info
         stat = target.stat()
         return {
             "path": str(target),
@@ -176,6 +208,9 @@ def fs_read(
     """Read file contents"""
     require_auth(authorization)
 
+    if not ACCESS["fs_read"]:
+        raise HTTPException(status_code=403, detail="Read access disabled")
+
     target = Path(path).expanduser().resolve()
 
     if not target.exists():
@@ -199,6 +234,9 @@ def fs_write(
     """Write content to file"""
     require_auth(authorization)
 
+    if not ACCESS["fs_write"]:
+        raise HTTPException(status_code=403, detail="Write access disabled. Start with --solid or --full")
+
     target = Path(req.path).expanduser().resolve()
     target.parent.mkdir(parents=True, exist_ok=True)
 
@@ -219,6 +257,9 @@ def fs_mkdir(
     """Create directory"""
     require_auth(authorization)
 
+    if not ACCESS["fs_write"]:
+        raise HTTPException(status_code=403, detail="Write access disabled. Start with --solid or --full")
+
     target = Path(req.path).expanduser().resolve()
     target.mkdir(parents=True, exist_ok=True)
 
@@ -232,6 +273,9 @@ def fs_rm(
 ):
     """Remove file or directory"""
     require_auth(authorization)
+
+    if not ACCESS["fs_delete"]:
+        raise HTTPException(status_code=403, detail="Delete access disabled. Start with --full")
 
     target = Path(req.path).expanduser().resolve()
 
@@ -257,8 +301,8 @@ def exec_command(
     """Execute shell command"""
     require_auth(authorization)
 
-    if not ALLOW_EXEC:
-        raise HTTPException(status_code=403, detail="Command execution disabled")
+    if not ACCESS["exec"]:
+        raise HTTPException(status_code=403, detail="Exec disabled. Start with --full to enable")
 
     try:
         result = subprocess.run(
@@ -282,7 +326,7 @@ def exec_command(
         raise HTTPException(status_code=400, detail=f"Command not found: {req.cmd[0]}")
 
 # ==============================================================================
-# Chat Proxy (Optional - forwards to local LLM)
+# Chat Proxy (Optional)
 # ==============================================================================
 
 @app.post("/v1/chat/completions")
@@ -290,18 +334,12 @@ def chat_completions(
     req: ChatRequest,
     authorization: Optional[str] = Header(None)
 ):
-    """
-    OpenAI-compatible chat endpoint.
-
-    By default returns a placeholder. Configure OLLAMA_HOST to proxy to Ollama,
-    or override this endpoint to proxy to your preferred LLM.
-    """
+    """OpenAI-compatible chat endpoint (optional LLM proxy)"""
     require_auth(authorization)
 
     ollama_host = os.getenv("OLLAMA_HOST")
 
     if ollama_host:
-        # Proxy to Ollama
         import requests
         resp = requests.post(
             f"{ollama_host}/v1/chat/completions",
@@ -309,7 +347,6 @@ def chat_completions(
         )
         return resp.json()
 
-    # Default: return placeholder
     return {
         "id": "trapdoor-1",
         "object": "chat.completion",
@@ -324,28 +361,83 @@ def chat_completions(
     }
 
 # ==============================================================================
-# Main
+# CLI
 # ==============================================================================
 
 def main():
-    print("""
-╔═══════════════════════════════════════════════════════════════════╗
-║                      TRAPDOOR 1.0                                 ║
-║         Give cloud AIs safe access to your local machine          ║
-╚═══════════════════════════════════════════════════════════════════╝
-""")
-    print(f"🌐 Server:  http://localhost:{PORT}")
-    print(f"🔑 Token:   {TOKEN}")
-    print(f"📁 Config:  {TOKEN_FILE}")
-    print(f"⚡ Exec:    {'enabled' if ALLOW_EXEC else 'disabled'}")
-    print()
-    print("To expose publicly, run:")
-    print(f"    ngrok http {PORT}")
-    print()
-    print("Then upload connector.py to ChatGPT/Claude with your ngrok URL + token")
-    print("─" * 67)
+    global ACCESS, PORT
 
-    uvicorn.run(app, host="0.0.0.0", port=PORT)
+    parser = argparse.ArgumentParser(
+        description="Trapdoor - Give cloud AIs safe access to your local machine",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Access Levels:
+  --limited   Read-only filesystem, no exec (DEFAULT - safest)
+  --solid     Read/write filesystem, no exec
+  --full      Full access including command execution
+
+Examples:
+  trapdoor                     # Safe read-only mode
+  trapdoor --solid             # Allow file writes
+  trapdoor --full --port 9000  # Full access on port 9000
+"""
+    )
+
+    # Access level (mutually exclusive)
+    level_group = parser.add_mutually_exclusive_group()
+    level_group.add_argument("--limited", action="store_true", help="Read-only (default)")
+    level_group.add_argument("--solid", action="store_true", help="Read/write, no exec")
+    level_group.add_argument("--full", action="store_true", help="Full access + exec")
+
+    parser.add_argument("--port", "-p", type=int, default=8080, help="Port (default: 8080)")
+    parser.add_argument("--host", default="0.0.0.0", help="Host (default: 0.0.0.0)")
+
+    args = parser.parse_args()
+
+    # Set access level
+    if args.full:
+        ACCESS = LEVELS["full"]
+        level_name = "full"
+        level_icon = "🔓"
+    elif args.solid:
+        ACCESS = LEVELS["solid"]
+        level_name = "solid"
+        level_icon = "🔐"
+    else:
+        ACCESS = LEVELS["limited"]
+        level_name = "limited"
+        level_icon = "🔒"
+
+    PORT = args.port
+
+    # Print banner
+    print(f"""
+╔═══════════════════════════════════════════════════════════════════╗
+║                       TRAPDOOR 1.0                                ║
+║          Give cloud AIs safe access to your local machine         ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+{level_icon} Access Level: {level_name.upper()}
+   {ACCESS['description']}
+
+   Permissions:
+   {"✓" if ACCESS["fs_read"] else "✗"} Read files
+   {"✓" if ACCESS["fs_write"] else "✗"} Write files
+   {"✓" if ACCESS["fs_delete"] else "✗"} Delete files
+   {"✓" if ACCESS["exec"] else "✗"} Execute commands
+
+🌐 Server:  http://localhost:{PORT}
+🔑 Token:   {TOKEN}
+📁 Config:  {TOKEN_FILE}
+
+To expose publicly:
+    ngrok http {PORT}
+
+Then upload connector.py to ChatGPT/Claude with your URL + token
+{"─" * 67}
+""")
+
+    uvicorn.run(app, host=args.host, port=PORT)
 
 
 if __name__ == "__main__":
