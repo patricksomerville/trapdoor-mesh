@@ -1,3 +1,6 @@
+# Private (v2 mesh network - not for public release)
+v2/
+
 # Python
 __pycache__/
 *.py[cod]
