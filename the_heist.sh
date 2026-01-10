@@ -344,6 +344,122 @@ PID_FRANK=$!
 echo "   Started: PID $PID_FRANK"
 
 # ============================================================================
+# MICHAEL CLAYTON - The Fixer (Grok 4.1 Heavy - The Beast)
+# ============================================================================
+echo -e "${RED}🧹 Michael Clayton${NC} - GROK 4.1 HEAVY (The Fixer)"
+echo "   Task: Fix anything that breaks, ensure clean state"
+echo "   Power: Grok Heavy - the beast mode"
+(
+    cd "$WORKDIR"
+
+    # Try Grok first via xAI API
+    GROK_PROMPT="You are Michael Clayton - The Fixer. You make problems disappear.
+
+Your mission: Run AFTER the other agents and fix anything broken.
+
+1. Check for any Python syntax errors in the new files:
+   python3 -m py_compile memory_bridge.py 2>&1 || echo 'FIXME: memory_bridge.py'
+   python3 -m py_compile supermemory_bridge.py 2>&1 || echo 'FIXME: supermemory_bridge.py'
+   python3 -m py_compile conductor_endpoints.py 2>&1 || echo 'FIXME: conductor_endpoints.py'
+   python3 -m py_compile total_capture.py 2>&1 || echo 'FIXME: total_capture.py'
+
+2. Check if Docker is running (needed for Qdrant):
+   docker ps > /dev/null 2>&1 || echo 'Docker not running - start Docker Desktop'
+
+3. Check if trapdoor server can still start:
+   timeout 5 python3 -c 'from local_agent_server import app; print(\"Server imports OK\")' 2>&1
+
+4. Verify all required directories exist:
+   mkdir -p ~/.trapdoor
+   mkdir -p ~/.total_capture
+   mkdir -p ~/.hangar
+
+5. Create a STATUS_REPORT.md summarizing:
+   - What's working
+   - What needs manual attention
+   - Recommended next steps
+
+Be the professional who ensures everything is buttoned up. You're Grok Heavy - THE BEAST. Leave nothing broken."
+
+    # Check if grok CLI is available
+    if command -v grok &> /dev/null; then
+        echo "Using Grok CLI" >> "$RESULTS_DIR/12_michael_clayton_fixer.md"
+        grok --model grok-4.1 --prompt "$GROK_PROMPT" >> "$RESULTS_DIR/12_michael_clayton_fixer.md" 2>&1
+    elif [ -n "$XAI_API_KEY" ]; then
+        echo "Using xAI API" >> "$RESULTS_DIR/12_michael_clayton_fixer.md"
+        curl -s https://api.x.ai/v1/chat/completions \
+            -H "Authorization: Bearer $XAI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{\"model\": \"grok-4.1\", \"messages\": [{\"role\": \"user\", \"content\": \"$GROK_PROMPT\"}]}" \
+            | jq -r '.choices[0].message.content' >> "$RESULTS_DIR/12_michael_clayton_fixer.md" 2>&1
+    else
+        echo "Grok not available - falling back to Claude Sonnet" >> "$RESULTS_DIR/12_michael_clayton_fixer.md"
+        claude --print --dangerously-skip-permissions --model sonnet --prompt "
+You are Michael Clayton - The Fixer. You make problems disappear.
+
+Your mission: Run AFTER the other agents and fix anything broken.
+
+Wait 60 seconds for other agents to complete, then:
+
+1. Check for any Python syntax errors in the new files:
+   python3 -m py_compile memory_bridge.py 2>&1 || echo 'FIXME: memory_bridge.py'
+   python3 -m py_compile supermemory_bridge.py 2>&1 || echo 'FIXME: supermemory_bridge.py'
+   python3 -m py_compile conductor_endpoints.py 2>&1 || echo 'FIXME: conductor_endpoints.py'
+   python3 -m py_compile total_capture.py 2>&1 || echo 'FIXME: total_capture.py'
+
+2. Check if Docker is running (needed for Qdrant):
+   docker ps > /dev/null 2>&1 || echo 'Docker not running - start Docker Desktop'
+
+3. Check if trapdoor server can still start:
+   timeout 5 python3 -c 'from local_agent_server import app; print(\"Server imports OK\")' 2>&1
+
+4. Verify all required directories exist:
+   mkdir -p ~/.trapdoor
+   mkdir -p ~/.total_capture
+   mkdir -p ~/.hangar
+
+5. Create a STATUS_REPORT.md summarizing:
+   - What's working
+   - What needs manual attention
+   - Recommended next steps
+
+Be the professional who ensures everything is buttoned up.
+" >> "$RESULTS_DIR/12_michael_clayton_fixer.md" 2>&1
+    fi
+) &
+PID_CLAYTON=$!
+echo "   Started: PID $PID_CLAYTON (delayed 60s)"
+
+# ============================================================================
+# TESS OCEAN - The Conscience (Security Review)
+# ============================================================================
+echo -e "${PURPLE}💎 Tess Ocean${NC} - The Conscience (Security Review)"
+echo "   Task: Ensure nothing dangerous was introduced"
+(
+    cd "$WORKDIR"
+    claude --print --dangerously-skip-permissions --model haiku --prompt "
+You are Tess Ocean - the conscience of the operation.
+
+Your mission: Security review of all new code.
+
+Check for dangerous patterns in:
+1. conductor_endpoints.py - Does it properly validate inputs?
+2. total_capture.py - Is it capturing anything sensitive (passwords, tokens)?
+3. the_heist.sh - Are there any hardcoded secrets that shouldn't be there?
+
+Look for:
+- Hardcoded API keys or tokens (besides the ones meant to be there)
+- Command injection vulnerabilities
+- Path traversal risks
+- Unvalidated user input
+
+Report any security concerns that need addressing.
+" > "$RESULTS_DIR/13_tess_security.md" 2>&1
+) &
+PID_TESS=$!
+echo "   Started: PID $PID_TESS"
+
+# ============================================================================
 # Wait for the crew
 # ============================================================================
 echo ""
@@ -355,7 +471,7 @@ echo "⏳ All agents deployed. Waiting for completion..."
 echo ""
 
 # Track completion
-TOTAL=11
+TOTAL=13
 COMPLETED=0
 FAILED=0
 
@@ -382,6 +498,8 @@ wait_agent $PID_SAUL "Saul Bloom"
 wait_agent $PID_REUBEN "Reuben Tishkoff"
 wait_agent $PID_YEN "Yen"
 wait_agent $PID_FRANK "Frank Catton"
+wait_agent $PID_CLAYTON "Michael Clayton"
+wait_agent $PID_TESS "Tess Ocean"
 
 # ============================================================================
 # The Debrief
