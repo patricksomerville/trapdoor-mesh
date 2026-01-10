@@ -12,6 +12,7 @@ Usage:
 import argparse
 import os
 import secrets
+import socket
 import subprocess
 import shutil
 from pathlib import Path
@@ -78,6 +79,25 @@ def get_or_create_token() -> str:
     return token
 
 TOKEN = get_or_create_token()
+
+# ==============================================================================
+# Port Detection
+# ==============================================================================
+
+def find_open_port(start_port: int = 8080, max_attempts: int = 100) -> int:
+    """Find an available port, starting from start_port.
+
+    Returns the first available port, or raises RuntimeError if none found.
+    """
+    for offset in range(max_attempts):
+        port = start_port + offset
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.bind(('', port))
+                return port
+        except OSError:
+            continue
+    raise RuntimeError(f"No available port found in range {start_port}-{start_port + max_attempts - 1}")
 
 # ==============================================================================
 # FastAPI App
@@ -470,7 +490,14 @@ Examples:
         level_icon = "🔒"
         level_warning = ""
 
-    PORT = args.port
+    # Try requested port, fall back to auto-detection
+    requested_port = args.port
+    try:
+        PORT = find_open_port(requested_port, max_attempts=1)
+    except RuntimeError:
+        # Requested port in use, find another
+        PORT = find_open_port(requested_port + 1, max_attempts=100)
+        print(f"⚠️  Port {requested_port} in use, using {PORT} instead\n")
 
     # Print banner
     print(f"""
