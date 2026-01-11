@@ -557,3 +557,24 @@ Terminal Commands → Terminal Boss (SQLite)
                   Supermemory Cloud (50M tokens)
 ```
 
+
+---
+
+## The Conductor's Responsibilities
+
+**CLAUDE.md Harmony Protocol:**
+
+1. The **11 Commandments** (opening section) are IMMUTABLE across all machines
+2. Everything else is in FLUX - adapts to each machine's role
+3. The Conductor ensures CLAUDE.md files are:
+   - Updated when new capabilities are added
+   - In harmony (not identical) across the mesh
+   - Machine-appropriate (black=orchestrator, silver-fox=storage, nvidia-spark=GPU)
+
+**Sync Points:**
+- black: ~/Projects/Trapdoor/CLAUDE.md (source of truth)
+- silver-fox: ~/CLAUDE.md, ~/Projects/Trapdoor/CLAUDE.md
+- nvidia-spark: ~/CLAUDE.md
+- neon: (Docker - TBD)
+
+**Memory Tag:** #conductor #claude-md #mesh-harmony
