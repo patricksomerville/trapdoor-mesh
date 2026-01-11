@@ -145,19 +145,7 @@ PID4=$!
 echo "🎩 Agent 5: Claude Code integration check..."
 (
     if [ "$CLAUDE_OK" = "1" ]; then
-        timeout 120 claude --print --dangerously-skip-permissions --model haiku --prompt "
-You are checking the trapdoor integration.
-
-List the files in the current directory and confirm these exist:
-- memory_bridge.py
-- supermemory_bridge.py
-- conductor_endpoints.py
-- total_capture.py
-- hangar.py
-
-If they exist, read the first 10 lines of each and confirm they look valid.
-Output a simple status report.
-" > "$RESULTS_DIR/05_claude_check.md" 2>&1
+        timeout 120 claude -p --dangerously-skip-permissions --model haiku "You are checking the trapdoor integration. List files and confirm these exist: memory_bridge.py, supermemory_bridge.py, conductor_endpoints.py, total_capture.py, hangar.py. Read first 10 lines of each and confirm valid. Output a simple status report." > "$RESULTS_DIR/05_claude_check.md" 2>&1
     else
         echo "Claude CLI not available" > "$RESULTS_DIR/05_claude_check.md"
     fi
