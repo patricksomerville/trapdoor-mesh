@@ -494,3 +494,66 @@ trapdoor_local_chat("What is 2+2?", model="qwen2.5-coder:32b")
 ---
 
 **Remember:** This is personal infrastructure for operating with advantages. Build what you need, when you need it. Learn from every interaction.
+
+---
+
+## Memory Stack (NEW - 2026-01-11)
+
+**Status:** OPERATIONAL
+
+The memory system captures everything and syncs to cloud.
+
+### Components
+
+| Component | Location | Purpose |
+|-----------|----------|----------|
+| Terminal Boss | ~/terminal-boss/ | Captures all terminal commands (14k+ sessions) |
+| Supermemory | Cloud API | Long-term memory (50M tokens) |
+| Memory Bridge | /v1/memory/* | Local Qdrant interface (optional) |
+| Supermemory Bridge | /v1/supermemory/* | Cloud memory API |
+| Conductor | /conductor/* | Mesh orchestration endpoints |
+
+### Terminal Boss → Supermemory Sync
+
+```bash
+# Check sync status
+python3 ~/terminal-boss/supermemory_sync.py status
+
+# Run sync batch (1000 commands)
+python3 ~/terminal-boss/supermemory_sync.py sync
+
+# Sync all (loop until done)
+cd ~/terminal-boss && while python3 supermemory_sync.py sync | grep -v "Up to date"; do :; done
+```
+
+**Config:** ~/.trapdoor/supermemory.json
+```json
+{"api_key": "sm_..."}
+```
+
+### Live Endpoints
+
+```bash
+# Memory health (Qdrant)
+curl https://trapdoor.treehouse.tech/v1/memory/health
+
+# Supermemory health (cloud)
+curl https://trapdoor.treehouse.tech/v1/supermemory/health
+
+# Conductor - mesh status
+curl https://trapdoor.treehouse.tech/conductor/machines
+
+# Conductor - query Qwen
+curl "https://trapdoor.treehouse.tech/conductor/qwen?prompt=Hello"
+```
+
+### Data Flow
+
+```
+Terminal Commands → Terminal Boss (SQLite)
+                          ↓
+                  supermemory_sync.py
+                          ↓
+                  Supermemory Cloud (50M tokens)
+```
+
